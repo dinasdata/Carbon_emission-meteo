@@ -6,14 +6,16 @@ from scipy.stats import pearsonr
 from sklearn.linear_model import LinearRegression
 #loading all the dataset
 meteo = pd.read_excel("mto.xlsx")
-ghg = pd.read_csv("historical_emissions.csv")
+ghg = pd.read_csv("ghg.csv")
 #explatory data analysis
 """print(meteo.head())
 print(ghg.head())"""
 # we don't need to check NA values because there aren't any unavaible values
 #ghg dataset cleaning
 indexes = np.arange(1993,2023).astype("str")
-emissions = np.array(ghg[indexes])
+population  = 3.5 #this is the average population number of the analamanga region
+emissions =((np.array(ghg[indexes]).T)*3.5).reshape((30,))
+
 #meteo dataset cleaning
 meteo["mean_temperature"] = (meteo["Tmax(°C)"]+meteo["Tmin(°C)"])/2
 temperature = meteo["mean_temperature"].groupby(by = meteo["date"].dt.year).mean()
@@ -38,7 +40,31 @@ def get_information(parameter,title):
     plt.plot(indexes,trend,lw = 6,color = "red")
     plt.grid()
     plt.title("Annual {} distribution for the Analamanga region(1993-2022)".format(title),**font)
-    
+    #additionnal information
+    mean = np.mean(parameter)
+    std = np.std(parameter)
+    coeff,p_value = pearsonr(parameter,indexes.astype("int64"))
+    maximum = np.max(parameter)
+    minimum = np.min(parameter)
+    print("Mean value of {}".format(title),mean)
+    print("Standart deviation :",std)
 
-#get_information(emissions.T,"CO2 emission")    
-print(emissions)
+    print("Minimum in ",1993 + np.argmin(parameter))
+    print("Value :",minimum)
+    print("Maximum in",1993+np.argmax(parameter))
+    print("Value",maximum) 
+    print("Variation with time of {}".format(title),model.coef_)
+    if p_value > 0.05:
+        print("Absence of relation with time")
+        print("Correlation coefficient",coeff)
+        
+    else:
+        print("Presence of relation with time")
+        print("Correlation coefficient",coeff)
+
+parameters = {"temperature[°C]":temperature,"rainfall[mm]":rainfall,"CO2 emissions [MTCO2equ]":emissions}
+for i,j in parameters.items():
+    get_information(j,i)
+
+
+    
