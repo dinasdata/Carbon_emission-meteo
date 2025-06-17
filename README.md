@@ -14,27 +14,36 @@ The meteorological parameters dataset is issued from the national weather servic
    -  <img src="rainfall.png" alt="Annual Rainfall Distribution">
 
 2. **Temperature Trends**  
-   - Stable annual averages (18.0°C–19.4°C) with minor fluctuations.  
-   - No sharp warming/cooling, suggesting regional climate resilience.  
+   - Stable annual averages (18.0°C–19.4°C) with minor fluctuations. The average value is 18.69°C with a standard deviation of 0.32°C, which means that temperture is pretty stable .The maximum value is in 2019 with a mean temperature of 19.5°C and the minimum value is in 1993 with a temperature of 18.04°C.
+   - The plot shows that temperature is increasing by year, with an increase of 0.03°C per year, and with a correlation coefficient of 0.72 we can confirm a presence of correlation with time.
+   - <img src="temperature.png" alt="Annual Temperature Distribution">
 
-3. **CO₂ Emissions vs. Temperature**  
-   - Weak visible correlation between local CO₂ and temperature.  
-   - Global vs. local factors may explain the disconnect.  
+3. **CO₂ Emissions**  
+   - We can see an increase with time,especially since 2010. The mean value is 0.389 MtCO2eq with a standard deviation of 0.08 MtCO2eq, which is averagely stable. The max value is in 2017 (0.56 MtCO2eq) and the minimum value in 2002 (0.25 MtCO2eq).
+   - Correlation with time is confirmed with a correlation coefficient of 0.77, and Carbon Dioxyde emission is increasing by 0.0078 MtCO2eq per year  
+   - Global vs. local factors may explain the disconnect.
+   -  <img src="CO2.png" alt="Annual Carbon Dioxyde  Distribution">
 
 4. **Rainfall vs. CO₂ Emissions**  
-   - No direct relationship found; rainfall likely driven by oceanic-atmospheric cycles.  
+   - No direct relationship found; rainfall likely driven by oceanic-atmospheric cycles. (Correlation coefficient : -0.1)
+   - - <img src="rainfallandco2.png" alt="Comparison between rainfall and CO2 emission">
 
-5. **CO₂ Prediction Model**  
-   - Fitted vs. observed emissions show close alignment, suggesting a robust forecasting approach.  
+5. **Temperature vs. CO2 Emissions**
+   - Visible relation between the two parameters, both are increasing by time (Correlation coefficient : 0.52)
+   -  <img src="temperatureandco2.png" alt="Comparison between temperature and CO2 emission">    
+
+7. **CO₂ Prediction Model with the Support Vector Machine**  
+   - Fitted vs. observed emissions show close alignment, suggesting a robust forecasting approach, but the r-squarred score is low (0.35)
+   - RMSE : 0.0091 MtCO2eq/ MAE : 0.07 MtCO2eq
+    - <img src="CO2prediction.png" alt="CO2 emision prediction with the Support Vector Machine regressor model">
 
 ## 🔍 Key Insights  
-- Local CO₂ emissions do not strongly correlate with temperature or rainfall changes in Analamanga.  
+- Local CO₂ emissions do not strongly correlate with rainfall changes in Analamanga but is correlate with temperature.  
 - Temperature stability contrasts with global warming trends, possibly due to regional buffering effects.  
 - Rainfall patterns remain variable but without significant directional shifts.  
 
 ## 🛠️ Tools & Methods  
 - Data: Historical climate records (1993–2022).  
-- Analysis: Trend detection, correlation tests, and time-series forecasting.  
-- Visualization: Matplotlib, Seaborn, or similar tools (plots provided as PNGs).  
+- Analysis: Trend detection, correlation tests, and Support Vector Machine ML model with SciKit-learn.  
+- Visualization: Matplotlib and Seaborn, .  
 
-## 📂 Repository Structure  
