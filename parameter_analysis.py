@@ -91,4 +91,3 @@ def relation(y,y_title = None):
     plt.legend(loc = "lower right",fontsize = 35)
     
 
-relation(rainfall,"rainfall[mm]")
