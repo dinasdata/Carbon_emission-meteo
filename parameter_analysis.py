@@ -26,7 +26,7 @@ plt.grid()
 plt.figure(figsize = (30,25))
 plt.rc("xtick",labelsize = 20)
 plt.rc("ytick",labelsize = 25)
-plt.rc("font",size = 25)
+plt.rc("font",size = 30)
 plt.style.use("ggplot")
 font = {"size":35}
 #getting all the needed information
@@ -84,10 +84,11 @@ def relation(y,y_title = None):
     axis1.set_xlabel("Year",**font)
     axis1.set_ylabel("Carbon dioxyde emission (MtCO2equ)",**font)
     axis1.plot(indexes,emissions,lw = 6,color = "blue",label = "Carbon dioxyde emission[MtCO2equ]")
-    plt.legend(loc = "upper left")
+    plt.legend(loc = "upper left",fontsize = 35)
     axis2 = axis1.twinx()
     axis2.set_ylabel(y_title,**font)
     axis2.plot(indexes,y,lw = 6,label = y_title)
-    plt.legend(loc = "lower right")
+    plt.legend(loc = "lower right",fontsize = 35)
     
 
+relation(rainfall,"rainfall[mm]")
