@@ -5,6 +5,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 from scipy.stats import pearsonr
 from sklearn.linear_model import LinearRegression
+import seaborn as sns
 #loading all the dataset
 meteo = pd.read_excel("mto.xlsx")
 ghg = pd.read_csv("ghg.csv")
@@ -27,7 +28,7 @@ plt.figure(figsize = (30,25))
 plt.rc("xtick",labelsize = 20)
 plt.rc("ytick",labelsize = 25)
 plt.rc("font",size = 30)
-plt.style.use("ggplot")
+sns.set_theme(style = "darkgrid")
 font = {"size":35}
 #getting all the needed information
 def get_information(parameter,title = None):
@@ -36,12 +37,13 @@ def get_information(parameter,title = None):
     model.fit(indexes.astype("int64").reshape((30,1)),parameter)
     trend = model.predict(indexes.astype("int64").reshape((30,1)))
     #plotting the distribution
+    data = pd.DataFrame({"y" : parameter,"x" : indexes})
     plt.subplot(2,1,1)
-    plt.plot(indexes,parameter,lw = 6,color = "blue")
+    sns.lineplot(data = data,x = "x",y = "y")
     plt.ylabel(title,**font)
     plt.subplot(2,1,2)
-    plt.scatter(indexes,parameter,lw = 20,color = "blue")
-    plt.plot(indexes,trend,lw = 6,color = "red")
+    sns.scatterplot(data = data,x = "x",y = "y")
+    sns.lineplot(x = indexes,y = trend)
     plt.title("Annual {} distribution for the Analamanga region(1993-2022)".format(title),**font)
     plt.ylabel(title,**font)
     plt.xlabel("Years",**font)
@@ -90,4 +92,4 @@ def relation(y,y_title = None):
     axis2.plot(indexes,y,lw = 6,label = y_title)
     plt.legend(loc = "lower right",fontsize = 35)
     
-
+get_information(temperature,"temperature[°C]")
