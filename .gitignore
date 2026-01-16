@@ -1,3 +1,9 @@
 *.png
 *.xlsx
 *.csv
+bin/
+ghg.zip
+lib/
+lib64
+pyvenv.cfg
+share/
