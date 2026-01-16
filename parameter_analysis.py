@@ -7,7 +7,7 @@ from scipy.stats import pearsonr
 from sklearn.linear_model import LinearRegression
 import seaborn as sns
 #loading all the dataset
-meteo = pd.read_excel("mto.xlsx")
+"""meteo = pd.read_excel("mto.xlsx")
 ghg = pd.read_csv("ghg.csv")
 #explatory data analysis
 print(meteo.head())
@@ -91,5 +91,7 @@ def relation(y,y_title = None):
     axis2.set_ylabel(y_title,**font)
     axis2.plot(indexes,y,lw = 6,label = y_title)
     plt.legend(loc = "lower right",fontsize = 35)
-    
-get_information(temperature,"temperature[°C]")
+    """
+#get_information(temperature,"temperature[°C]")
+plt.plot(np.arange(1,5),np.sqrt(np.arange(1,5)))
+plt.show()
