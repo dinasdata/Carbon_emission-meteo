@@ -2,9 +2,10 @@ from sklearn.linear_model import LinearRegression,Lasso
 from sklearn.model_selection import train_test_split,KFold
 from sklearn.svm import SVR
 from sklearn.preprocessing import StandardScaler,PolynomialFeatures
+from sklearn.pipeline import Pipeline
 import numpy as np 
 import pandas as pd 
-
+import pickle 
 # dataset importation
 meteo = pd.read_excel("/media/dina/f4c07323-3819-4c76-ad53-95f7d45b7ae2/temperature/mto.xlsx")
 meteo = meteo.dropna()
@@ -20,11 +21,13 @@ emissions =((np.array(ghg[indexes]).T)*3.5).reshape((30,1))
 # Linear regression model
 
 def linear_regression(x,y):
+    global lr
     # splitting train and test split 
     x_train,x_test,y_train,y_test = train_test_split(x,y)
     # scaling train & test features
     
     def scale(train,test):
+    
         scaler = StandardScaler()
         x_train_scaled = scaler.fit_transform(train)
         x_test_scaled = scaler.transform(test)
@@ -34,13 +37,14 @@ def linear_regression(x,y):
     x_test_scaled = scale(x_train,x_test)["test_scaled"]
     model = LinearRegression()
     model.fit(x_scaled,y_train)
-    predicted = model.predict(x_test_scaled)
-    return predicted
+    lr = pickle.dumps(model)
+    
 
 
 # Lasso regression model
 
 def lasso_regression(x,y):
+    global lassoreg
     # splitting train and test split 
     x_train,x_test,y_train,y_test = train_test_split(x,y)
     # scaling train & test features
@@ -55,11 +59,11 @@ def lasso_regression(x,y):
     x_test_scaled = scale(x_train,x_test)["test_scaled"]
     model = Lasso(alpha = 1e-07)
     model.fit(x_scaled,y_train)
-    predicted = model.predict(x_test_scaled)
-    return predicted
+    lassoreg = pickle.dumps(model)
 
 # Polynomial regression model
 def polynomial_regression(x,y):
+    global polyreg
     # splitting train and test split 
     x_train,x_test,y_train,y_test = train_test_split(x,y)
     # scaling train & test features
@@ -72,17 +76,13 @@ def polynomial_regression(x,y):
     
     x_scaled = scale(x_train,x_test)["train_scaled"]
     x_test_scaled = scale(x_train,x_test)["test_scaled"]
-    pipe = PolynomialFeatures(degree = 2,include_bias = False)
-    x_real = pipe.fit_transform(x_scaled)
-
-    model = LinearRegression()
-    model.fit(x_real,y_train)
-    x_test_real = pipe.transform(x_test_scaled)
-    predicted = model.predict(x_test_real)
-    return predicted
+    pipe = Pipeline([("poly",PolynomialFeatures(degree = 2,include_bias = False)),("linreg",LinearRegression())])
+    pipe.fit(x_scaled,y_train)
+    polyreg = pickle.dumps(pipe)
 
 # Support Vector Machine Regressor 
 def svm_regressor(x,y):
+    global svreg
     # splitting train and test split 
     x_train,x_test,y_train,y_test = train_test_split(x,y)
     # scaling train & test features
@@ -97,7 +97,12 @@ def svm_regressor(x,y):
     x_test_scaled = scale(x_train,x_test)["test_scaled"]
     model = SVR (C = 35, gamma = 1, kernel = 'rbf')
     model.fit(x_scaled,y_train)
-    predicted = model.predict(x_test_scaled)
-    return predicted
+    svreg = pickle.dumps(model)
+    
 
-print(svm_regressor(emissions.reshape((30,1)),np.array(temperature).reshape((30,1))))
+lasso_regression(emissions.reshape((30,1)),np.array(temperature).reshape((30,1)))
+polynomial_regression(emissions.reshape((30,1)),np.array(temperature).reshape((30,1)))
+svm_regressor(emissions.reshape((30,1)),np.array(temperature).reshape((30,1)))
+lasso = pickle.loads(polyreg)
+p = lasso.predict(np.linspace(0,0.9,10).reshape((10,1)))
+print(p)
