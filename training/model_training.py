@@ -5,7 +5,8 @@ from sklearn.preprocessing import StandardScaler,PolynomialFeatures
 from sklearn.pipeline import Pipeline
 import numpy as np 
 import pandas as pd 
-import pickle 
+import joblib
+import os
 # dataset importation
 meteo = pd.read_excel("/media/dina/f4c07323-3819-4c76-ad53-95f7d45b7ae2/temperature/mto.xlsx")
 meteo = meteo.dropna()
@@ -37,7 +38,7 @@ def linear_regression(x,y):
     x_test_scaled = scale(x_train,x_test)["test_scaled"]
     model = LinearRegression()
     model.fit(x_scaled,y_train)
-    lr = pickle.dumps(model)
+    joblib.dump(model,"/media/dina/f4c07323-3819-4c76-ad53-95f7d45b7ae2/temperature/models/lr_model.joblib")
     
 
 
@@ -59,7 +60,8 @@ def lasso_regression(x,y):
     x_test_scaled = scale(x_train,x_test)["test_scaled"]
     model = Lasso(alpha = 1e-07)
     model.fit(x_scaled,y_train)
-    lassoreg = pickle.dumps(model)
+    joblib.dump(model,"/media/dina/f4c07323-3819-4c76-ad53-95f7d45b7ae2/temperature/models/lasso_regression.joblib")
+
 
 # Polynomial regression model
 def polynomial_regression(x,y):
@@ -78,7 +80,8 @@ def polynomial_regression(x,y):
     x_test_scaled = scale(x_train,x_test)["test_scaled"]
     pipe = Pipeline([("poly",PolynomialFeatures(degree = 2,include_bias = False)),("linreg",LinearRegression())])
     pipe.fit(x_scaled,y_train)
-    polyreg = pickle.dumps(pipe)
+    joblib.dump(pipe,"/media/dina/f4c07323-3819-4c76-ad53-95f7d45b7ae2/temperature/models/poly_regression.joblib")
+
 
 # Support Vector Machine Regressor 
 def svm_regressor(x,y):
@@ -97,12 +100,14 @@ def svm_regressor(x,y):
     x_test_scaled = scale(x_train,x_test)["test_scaled"]
     model = SVR (C = 35, gamma = 1, kernel = 'rbf')
     model.fit(x_scaled,y_train)
-    svreg = pickle.dumps(model)
+    joblib.dump(model,"/media/dina/f4c07323-3819-4c76-ad53-95f7d45b7ae2/temperature/models/svm_regressor.joblib")
+
     
 
 lasso_regression(emissions.reshape((30,1)),np.array(temperature).reshape((30,1)))
 polynomial_regression(emissions.reshape((30,1)),np.array(temperature).reshape((30,1)))
 svm_regressor(emissions.reshape((30,1)),np.array(temperature).reshape((30,1)))
-lasso = pickle.loads(polyreg)
-p = lasso.predict(np.linspace(0,0.9,10).reshape((10,1)))
-print(p)
+lasso = joblib.load("/media/dina/f4c07323-3819-4c76-ad53-95f7d45b7ae2/temperature/models/lasso_regression.joblib")
+poly = joblib.load("/media/dina/f4c07323-3819-4c76-ad53-95f7d45b7ae2/temperature/models/poly_regression.joblib")
+svr = joblib.load("/media/dina/f4c07323-3819-4c76-ad53-95f7d45b7ae2/temperature/models/svm_regressor.joblib")
+
