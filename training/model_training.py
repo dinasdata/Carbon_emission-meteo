@@ -107,7 +107,4 @@ def svm_regressor(x,y):
 lasso_regression(emissions.reshape((30,1)),np.array(temperature).reshape((30,1)))
 polynomial_regression(emissions.reshape((30,1)),np.array(temperature).reshape((30,1)))
 svm_regressor(emissions.reshape((30,1)),np.array(temperature).reshape((30,1)))
-lasso = joblib.load("/media/dina/f4c07323-3819-4c76-ad53-95f7d45b7ae2/temperature/models/lasso_regression.joblib")
-poly = joblib.load("/media/dina/f4c07323-3819-4c76-ad53-95f7d45b7ae2/temperature/models/poly_regression.joblib")
-svr = joblib.load("/media/dina/f4c07323-3819-4c76-ad53-95f7d45b7ae2/temperature/models/svm_regressor.joblib")
 
