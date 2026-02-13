@@ -6,6 +6,8 @@ library("readr")
 library("ggplot2")
 library("dplyr")
 
+
+
 ui = dashboardPage(
 dashboardHeader(title = "Temperature Prediction "),
 dashboardSidebar(fileInput("dataset","Upload here carbon dioxyde data")),
@@ -28,7 +30,7 @@ dataset = reactive({
     req(input$dataset)
     req(input$size)
     data = read_csv(input$dataset$datapath)
-    #data = data$carbon_dioxyde[1:input$size]
+    data = data$carbon_dioxyde[1:input$size]
     return (data)
 })
 predict = reactive({
@@ -43,24 +45,33 @@ api_values = base::rawToChar(api_var$content)
 #getting data
 data = fromJSON(api_values)
 return (data)}
-datas = runif(10,min = 0.1,max = 0.9)
-lr = c(0,nrows = length(datas))
-lasso = c(0,nrows = length(datas))
-poly = c(0,nrows = length(datas))
-svr = c(0,nrows = length(datas))
-for (i in 1:length(datas)){
-lr[i] = (prediction(datas[i])$"Linear regression prediction")
-lasso[i] = (prediction(datas[i])$"Lasso regression prediction")
-poly[i] = (prediction(datas[i])$"Polynomial regression prediction")
-svr[i] = (prediction(datas[i])$"svr prediction")
+})
+real_pred = reactive({
+pred_all = function(data){
+lr = c(0,nrows = 4)
+lasso = c(0,nrows = 4)
+poly = c(0,nrows = 4)
+svr = c(0,nrows = 4)
+for (i in 1:(length(data))){
+lr[i] = (predict()(data[i])$"Linear regression prediction")
+lasso[i] = (predict()(data[i])$"Lasso regression prediction")
+poly[i] = (predict()(data[i])$"Polynomial regression prediction")
+svr[i] = (predict()(data[i])$"svr prediction")
+}
 result = data.frame(linear_regression = lr,lasso_regression = lasso, polynomial_regression = poly, support_vector_machine = svr)
 return(result)
 }
 })
 output$plot = renderPlot({
     req(input$dataset)
+    req(input$size)
     ggplot()+
-    geom_line(mapping = aes(x = 1:input$size,y = predict(dataset())$linear_regression))
+    geom_point(mapping = aes(x = dataset(),y = real_pred()(dataset())$linear_regression),color = "red")+
+    geom_point(mapping = aes(x = dataset(),y = real_pred()(dataset())$lasso_regression),color = "blue")+
+    geom_point(mapping = aes(x = dataset(),y = real_pred()(dataset())$polynomial_regression),color = "black")+
+    geom_point(mapping = aes(x = dataset(),y = real_pred()(dataset())$support_vector_machine),color = "green")+
+    theme_light()
 })
+
 }
-shinyApp(ui,server)
+shinyApp(ui,server) 
