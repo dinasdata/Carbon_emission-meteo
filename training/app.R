@@ -10,28 +10,26 @@ library("dplyr")
 
 ui = dashboardPage(
 dashboardHeader(title = "Temperature Prediction "),
-dashboardSidebar(fileInput("dataset","Upload here carbon dioxyde data")),
+dashboardSidebar(fileInput("datasete","Upload here carbon dioxyde data")),
 dashboardBody(
-    fluidRow(
-        valueBoxOutput("lr"),
-        valueBoxOutput("lasso"),
-        valueBoxOutput("poly"),
-        valueBoxOutput("svr")
-    ),
     fluidRow(
         box(width = 8,
         plotOutput("plot"),downloadButton("down","Download raw data",class = "btn-success")),
-        box(width = 4,title = "Control",sliderInput("size","Select sample size",max = 20,min = 1,value = 10),selectInput("color","Select color",choices = c("black","red","green","blue")))
+        box(width = 4,title = "Control",sliderInput("size","Select sample size",max = 20,min = 1,value = 10),
+        actionButton("btn","Refresh size",class = "btn-primary"))
     )
 )
 )
-server = function(input,output){
+server = function(input,output) {
+ds = reactive({data = read_csv(input$datasete$datapath)
+return(data)})
 dataset = reactive({
-    req(input$dataset)
-    req(input$size)
-    data = read_csv(input$dataset$datapath)
-    data = data$carbon_dioxyde[1:input$size]
+    req(input$datasete)
+    data = ds()$carbon_dioxyde[1:input$size]
     return (data)
+})
+observeEvent(input$btn,{
+    updateSliderInput(inputId = "size",max = length(ds()$carbon_dioxyde),min = 1,value = 5)
 })
 predict = reactive({
 prediction = function(x){
@@ -62,16 +60,40 @@ result = data.frame(linear_regression = lr,lasso_regression = lasso, polynomial_
 return(result)
 }
 })
+linreg = reactive({
+    real_pred()(dataset())$linear_regression
+})
+lassoreg = reactive({
+    real_pred()(dataset())$lasso_regression
+})
+polyreg = reactive({
+    real_pred()(dataset())$polynomial_regression
+})
+svr = reactive({
+    real_pred()(dataset())$support_vector_machine
+})
 output$plot = renderPlot({
-    req(input$dataset)
+    req(input$datasete)
     req(input$size)
     ggplot()+
-    geom_point(mapping = aes(x = dataset(),y = real_pred()(dataset())$linear_regression),color = "red")+
-    geom_point(mapping = aes(x = dataset(),y = real_pred()(dataset())$lasso_regression),color = "blue")+
-    geom_point(mapping = aes(x = dataset(),y = real_pred()(dataset())$polynomial_regression),color = "black")+
-    geom_point(mapping = aes(x = dataset(),y = real_pred()(dataset())$support_vector_machine),color = "green")+
-    theme_light()
-})
-
+    geom_point(mapping = aes(x = dataset(),y = linreg(),fill = "Linear Regression"),color = "red")+
+    geom_line(mapping = aes(x = dataset(),y = linreg()),color = "red")+
+    geom_point(mapping = aes(x = dataset(),y = lassoreg(),fill = "Lasso Regression"),color = "blue")+
+    geom_line(mapping = aes(x = dataset(),y = lassoreg()),color = "blue")+
+    geom_point(mapping = aes(x = dataset(),y = polyreg(),fill = "Polyomial Regression"),color = "black")+
+    geom_line(mapping = aes(x = dataset(),y = polyreg()),color = "black")+
+    geom_point(mapping = aes(x = dataset(),y = svr(),fill = "Support Vector Machine Regressor"),color = "green")+
+    geom_line(mapping = aes(x = dataset(),y = svr()),color = "green")+
+    labs(title = "Predicted temperature by ML models",x = "indexes",y = "temperature(°C)",fill = "Model type")+
+    theme_light()  
+    })
+output$down = downloadHandler(
+    filename  = function(){
+        paste("predicted.csv")
+    },
+    content = function(file){
+        write.csv(real_pred()(dataset()),file,row.names = FALSE)
+    }
+)
 }
 shinyApp(ui,server) 
