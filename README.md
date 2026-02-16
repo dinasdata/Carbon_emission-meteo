@@ -61,5 +61,5 @@ curl -X POST http://127.0.0.1:8000/predict \
 ## 🚀 Using interface (FastAPI)
 Run the file packages.R 
 The interface looks like :
-<img src="screen.png">
+<img src="training/screen.png">
 A sample dataset can be used : <a href="training/sample_ghg.csv" >
