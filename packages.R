@@ -1,0 +1,5 @@
+install.packages("tidyverse")
+install.packages("shiny")
+install.packages("shinydashboard")
+install.packages("httr")
+install.packages("jsonlite")

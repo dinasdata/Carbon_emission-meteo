@@ -8,7 +8,7 @@ library("dplyr")
 
 
 
-ui = dashboardPage(
+ui = dashboardPage( 
 dashboardHeader(title = "Temperature Prediction "),
 dashboardSidebar(fileInput("datasete","Upload here carbon dioxyde data")),
 dashboardBody(
@@ -59,6 +59,7 @@ svr[i] = (predict()(data[i])$"svr prediction")
 result = data.frame(linear_regression = lr,lasso_regression = lasso, polynomial_regression = poly, support_vector_machine = svr)
 return(result)
 }
+
 })
 linreg = reactive({
     real_pred()(dataset())$linear_regression
@@ -71,6 +72,12 @@ polyreg = reactive({
 })
 svr = reactive({
     real_pred()(dataset())$support_vector_machine
+})
+observe({
+    print(length(linreg()))
+    print(length(lassoreg()))
+    print(length(polyreg()))
+    print(length(svr()))
 })
 output$plot = renderPlot({
     req(input$datasete)
@@ -91,7 +98,7 @@ output$down = downloadHandler(
     filename  = function(){
         paste("predicted.csv")
     },
-    content = function(file){
+    content = function(file){   
         write.csv(real_pred()(dataset()),file,row.names = FALSE)
     }
 )
