@@ -54,7 +54,7 @@ uvicorn model_deployment:app --host 127.0.0.1 --port 8000
 curl -X POST http://127.0.0.1:8000/predict \
      -H "Content-Type: application/json" \
      -d '{
-           "carbon_emission": 0.45,
+           "carbon_dioxyde": 0.45,
          }'
 
 ```
