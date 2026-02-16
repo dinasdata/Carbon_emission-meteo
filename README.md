@@ -62,4 +62,4 @@ curl -X POST http://127.0.0.1:8000/predict \
 Run the file packages.R 
 The interface looks like :
 <img src="training/screen.png">
-A sample dataset can be used : <a href="training/sample_ghg.csv" >
+A sample dataset can be used : <link href="training/sample_ghg.csv" >
