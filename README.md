@@ -41,7 +41,25 @@ Install the required Python packages:
 
 ```bash
 pip install -r requirements.txt
+```
+## ▶️ Start the FastAPI Server
 
-## 🤖 Machine Learning Models
-**File:** `model_creation.ipynb`
+After installing Python dependencies, run the API server:
 
+```bash
+uvicorn model_deployment:app --host 127.0.0.1 --port 8000
+```
+## ▶️ Call the API from terminal 
+```bash
+curl -X POST http://127.0.0.1:8000/predict \
+     -H "Content-Type: application/json" \
+     -d '{
+           "carbon_emission": 0.45,
+         }'
+
+```
+## 🚀 Using interface (FastAPI)
+Run the file packages.R 
+The interface looks like :
+<img src="Screenshot from 2026-02-16 19-51-42.png" alt="R Application Interface Screenshot">
+A sample dataset can be used : <a href="training/sample_ghg.csv" alt="R Application Interface Screenshot">
