@@ -74,7 +74,7 @@ Output :
 
 ```
 ## 🚀 Using interface (FastAPI)
-Run the file **file** `packages.R `
+Run the file **file** `packages.R `, then run **file** `training/app.R`
 The interface looks like :
 <img src="training/screen.png">
 A sample dataset can be used :**file** `training/sample_ghg.csv`
